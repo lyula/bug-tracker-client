@@ -3,7 +3,7 @@ import { useBugs } from '../hooks/useBugs';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RoomsNav from './RoomsNav.jsx';
-import { FaTrash, FaEdit } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaSignOutAlt } from 'react-icons/fa';
 import { deleteBug } from '../utils/api';
 
 
@@ -34,16 +34,25 @@ function BugList() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 flex flex-col items-center py-4 px-4">
-      <div className="w-full max-w-3xl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 flex flex-col items-center py-4 px-1 overflow-x-hidden">
+      <div className="w-full max-w-[94vw] sm:max-w-screen-sm relative overflow-x-hidden">
+        {/* Mobile logout icon at top right */}
+        <span
+          onClick={handleLogout}
+          className="absolute right-2 top-4 block md:hidden text-white cursor-pointer z-10"
+          title="Logout"
+        >
+          <FaSignOutAlt size={26} />
+        </span>
         <div className="mb-8 gap-4">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between w-full">
-            <div className="flex-1">
+            <div>
               <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">Bug Tracker</h1>
               {user && (
                 <div className="text-gray-200 text-sm">Welcome, <span className="font-semibold">{user.username}</span></div>
               )}
             </div>
+            {/* Desktop logout button */}
             <div className="hidden md:block">
               <button
                 onClick={handleLogout}
@@ -60,14 +69,6 @@ function BugList() {
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-white mb-2">My Bugs Report</h2>
           <div className="flex flex-col items-end">
-            <div className="block md:hidden mb-2">
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition font-semibold"
-              >
-                Logout
-              </button>
-            </div>
             <div className="flex items-center gap-2 mb-2">
               <Link to="/new" className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition">+ Report Bug</Link>
             </div>

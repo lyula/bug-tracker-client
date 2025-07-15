@@ -8,6 +8,24 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function RoomBugs() {
+  const [copied, setCopied] = useState(false);
+  const [codeActive, setCodeActive] = useState(false);
+  const handleCopyCode = async () => {
+    if (room?.code) {
+      try {
+        await navigator.clipboard.writeText(room.code);
+        setCopied(true);
+        setCodeActive(true);
+        setTimeout(() => {
+          setCopied(false);
+          setCodeActive(false);
+        }, 1200);
+      } catch (err) {
+        setCopied(false);
+        setCodeActive(false);
+      }
+    }
+  };
   const [showMembers, setShowMembers] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -137,7 +155,19 @@ export default function RoomBugs() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
               <div>
                 <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">Room: {room.name}</h1>
-                <div className="text-gray-200 text-sm">Code: <span className="font-mono bg-gray-900 text-green-400 rounded px-2 py-1">{room.code}</span></div>
+                <div className="text-gray-200 text-sm">
+                  Code:
+                  <span
+                    className={`font-mono rounded px-2 py-1 cursor-pointer select-none transition relative ${codeActive ? 'bg-green-600 text-white' : 'bg-gray-900 text-green-400'} hover:bg-green-600`}
+                    onClick={handleCopyCode}
+                    title="Tap to copy"
+                  >
+                    {room.code}
+                    {copied && (
+                      <span className="absolute left-1/2 -translate-x-1/2 top-full mt-1 text-xs bg-green-700 text-white rounded px-2 py-1 shadow z-10">Copied!</span>
+                    )}
+                  </span>
+                </div>
                 <div className="text-gray-400 text-xs mt-1">Admin: {room.admin?.username}</div>
                 {room.members && (
                   <>
@@ -163,17 +193,19 @@ export default function RoomBugs() {
                 )}
               </div>
               <div className="flex-shrink-0 flex items-center justify-end w-full md:w-auto">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(true)}
-                  className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition"
-                >
-                  Report Bug
-                </button>
               </div>
             </div>
+            <div className="flex items-center justify-between mb-4 w-full">
+              <h2 className="text-xl font-bold text-white mb-0">Bugs</h2>
+              <button
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition"
+              >
+                Report Bug
+              </button>
+            </div>
             <div className="bg-white/90 rounded-2xl shadow-lg p-8 mb-8">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">Bugs</h2>
               {error && <p className="text-red-500 text-center font-medium">{error}</p>}
               <ul className="divide-y divide-gray-200">
                 {bugs.length === 0 ? (
